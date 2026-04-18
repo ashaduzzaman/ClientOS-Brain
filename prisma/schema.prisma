@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id                String   @id @default(cuid())
+  name              String
+  industry          String?
+  contactName       String?
+  contactEmail      String?
+  personality       String? // free-text: "prefers async", "very formal", etc.
+  relationshipScore Int      @default(5) // 1-10
+  notes             String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  projects Project[]
+
+  @@map("clients")
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  clientId    String
+  name        String
+  description String?
+  status      ProjectStatus @default(ACTIVE)
+  agreedScope String? // original agreed scope as free text or JSON string
+  startedAt   DateTime      @default(now())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  client    Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  decisions Decision[]
+  risks     Risk[]
+  tasks     Task[]
+
+  @@map("projects")
+}
+
+enum ProjectStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  ARCHIVED
+}
+
+model Decision {
+  id           String   @id @default(cuid())
+  projectId    String
+  title        String
+  rationale    String
+  madeBy       String // person or team
+  supersedesId String? // ID of the decision this replaces
+  createdAt    DateTime @default(now())
+
+  project      Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  supersedes   Decision?  @relation("DecisionChain", fields: [supersedesId], references: [id])
+  supersededBy Decision[] @relation("DecisionChain")
+
+  @@map("decisions")
+}
+
+model Risk {
+  id          String       @id @default(cuid())
+  projectId   String
+  description String
+  severity    RiskSeverity
+  status      RiskStatus   @default(OPEN)
+  flaggedBy   String?
+  resolvedAt  DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("risks")
+}
+
+enum RiskSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum RiskStatus {
+  OPEN
+  MONITORING
+  RESOLVED
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  projectId   String
+  title       String
+  description String?
+  isInScope   Boolean? // null = unknown, true = in scope, false = scope creep
+  addedAt     DateTime @default(now())
+  addedBy     String?
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("tasks")
+}

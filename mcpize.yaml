@@ -1,0 +1,12 @@
+name: clientos-brain
+description: "Living project memory and intelligence layer for agencies and consultancies"
+version: 1
+runtime: typescript
+entrypoint: dist/index.js
+build:
+  command: npm run build
+  install: npm install
+env:
+  - name: DATABASE_URL
+    secret: true
+    description: "Supabase PostgreSQL connection string"
