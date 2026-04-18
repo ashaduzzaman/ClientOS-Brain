@@ -1,6 +1,17 @@
 # ClientOS Brain MCP Server
+[![MCPize](https://mcpize.com/badge/@ashaduzzaman.nstu1994/clientos-brain)](https://mcpize.com/mcp/clientos-brain)
 
 ClientOS Brain is a TypeScript MCP server that stores and serves structured project intelligence for client work.
+
+## Connect via MCPize
+
+Use this MCP server instantly with no local installation:
+
+```bash
+npx -y mcpize connect @ashaduzzaman.nstu1994/clientos-brain --client claude
+```
+
+Or connect at: **https://mcpize.com/mcp/clientos-brain**
 
 ## Features
 

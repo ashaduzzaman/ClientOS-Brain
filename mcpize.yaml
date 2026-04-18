@@ -1,12 +1,13 @@
-name: clientos-brain
-description: "Living project memory and intelligence layer for agencies and consultancies"
+# MCPize Configuration
+# Docs: https://mcpize.com/docs/mcpize-yaml
+
 version: 1
+
+name: "clientos-brain"
+slug: "clientos-brain"
+
 runtime: typescript
-entrypoint: dist/index.js
+
 build:
-  command: npm run build
-  install: npm install
-env:
-  - name: DATABASE_URL
-    secret: true
-    description: "Supabase PostgreSQL connection string"
+  install: "npm install"
+  command: "npm run build"
