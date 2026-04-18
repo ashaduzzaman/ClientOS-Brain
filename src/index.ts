@@ -1,4 +1,7 @@
-import { createServer as createHttpServer, type IncomingMessage } from "node:http";
+import {
+  createServer as createHttpServer,
+  type IncomingMessage,
+} from "node:http";
 
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 
@@ -20,7 +23,10 @@ async function readJsonBody(req: IncomingMessage): Promise<unknown> {
   return body.length > 0 ? (JSON.parse(body) as unknown) : undefined;
 }
 
-async function handleMcpRequest(req: IncomingMessage, res: import("node:http").ServerResponse) {
+async function handleMcpRequest(
+  req: IncomingMessage,
+  res: import("node:http").ServerResponse,
+) {
   const server = createMcpServer();
   const transport = new StreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
@@ -29,7 +35,8 @@ async function handleMcpRequest(req: IncomingMessage, res: import("node:http").S
   await server.connect(transport);
 
   try {
-    const parsedBody = req.method === "POST" ? await readJsonBody(req) : undefined;
+    const parsedBody =
+      req.method === "POST" ? await readJsonBody(req) : undefined;
     await transport.handleRequest(req, res, parsedBody);
   } finally {
     res.on("close", () => {
